@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Satisfy" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=News+Cycle" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <style>
+        h1{
+            font-family: 'Satisfy', cursive;
+            color: white;
+        }
+        label, td, th, table, p{
+            font-family: 'News Cycle', sans-serif;
+        }
+    </style>
+
+<title>Agenda</title>
+</head>
+<body style="background-color: #D8D8D8">
+<nav class="navbar navbar-dark bg-dark">
+    <h1 style="margin: auto">Contatos</h1>
+    <!-- Button para abrir o modal de cadastro/edição -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalCadastrar" style="margin-right: 120px"><i class="far fa-plus-square"></i>  Adicionar</button>
+</nav>
+<div class="container">
+<div id="app">
+
+    <!-- Modal para cadastrar -->
+    <div class="modal fade" id="modalCadastrar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Cadastro de dados</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="recipient-name" class="col-form-label">Nome</label>
+                    <input type="text" class="form-control" id="recipient-name" v-model="usuario.nome" placeholder="Nome">
+                    <label for="recipient-numero" class="col-form-label">Numero</label>
+                    <input type="text" class="form-control" id="recipient-numero" v-model="usuario.numero" placeholder="(__)_____-___">
+                    <label for="recipient-email" class="col-form-label">Email</label>
+                    <input type="text" class="form-control" id="recipient-email" v-model="usuario.email" placeholder="email">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="addPessoas">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para atualizar -->
+    <div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Atualização de dados</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="recipient-name" class="col-form-label">Nome</label>
+                    <input type="text" class="form-control" id="recipient-name" v-model="usuario.nome">
+                    <label for="recipient-numero" class="col-form-label">Numero</label>
+                    <input type="text" class="form-control" id="recipient-numero" v-model="usuario.numero">
+                    <label for="recipient-email" class="col-form-label">Email</label>
+                    <input type="text" class="form-control" id="recipient-email" v-model="usuario.email" >
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" v-on:click="editarPessoas(usuario.id)" data-dismiss="modal">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div v-if="pessoas.length > 0">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Numero</th>
+                <th scope="col">Email</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr  v-for="pessoa in pessoas">
+                <td scope="row">{{pessoa.id}}</td>
+                <td scope="row">{{pessoa.nome}}</td>
+                <td scope="row">{{pessoa.numero}}</td>
+                <td scope="row">{{pessoa.email}}</td>
+                <td><button type="button" class="btn btn-info" data-toggle="modal"  data-target="#modalEditar" @click="usuario = pessoa"><i class="fas fa-user-edit"></i></button></td>
+                <td><button type="button" class="btn btn-danger" v-on:click="deletePessoas(pessoa.id)"><i class="fas fa-trash-alt"></i>
+
+                </button></td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <div v-else>
+        <p>Nenhum contato cadastrado</p>
+    </div>
+</div>
+
+</div>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data:{
+        pessoas: [],
+
+          usuario: {
+              nome:'',
+              numero:'',
+              email:'',
+          }
+        },
+        mounted(){
+            this.fetchPessoas();
+        },
+        methods:{
+            fetchPessoas(){
+                this.$http.get('http://localhost:8080/pessoa')
+                .then(response => {this.pessoas = response.body});
+        },
+
+            addPessoas: function(){
+                this.$http.post('http://localhost:8080/pessoa', this.usuario)
+                    .then(response => {this.pessoas.push(response.body);
+                        this.limparInputs();
+                    })
+        },
+            deletePessoas: function(id){
+                this.$http.delete(`http://localhost:8080/pessoa/excluir/${id}`)
+                    .then(this.fetchPessoas);
+            },
+            editarPessoas: function (id) {
+                this.$http.put(`http://localhost:8080/pessoa/${id}`, this.usuario);
+                console.log(this.usuario)
+            },
+            limparInputs(){
+                this.usuario={nome: null, numero: null, email: null};
+            }
+        }
+    });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>
